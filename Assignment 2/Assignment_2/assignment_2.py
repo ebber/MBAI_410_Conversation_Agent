@@ -40,7 +40,19 @@ features["area"] = load_csv("world_factbook/geography/area.csv")
 features["population"] = load_csv("world_factbook/people_and_society/population.csv")
 features["median age"] = load_csv("world_factbook/people_and_society/median_age.csv")
 features["life expectancy"] = load_csv("world_factbook/people_and_society/life_expectancy_at_birth.csv")
+# --- Economy ---
 features["gdp"] = load_csv("world_factbook/economy/real_gdp_purchasing_power_parity.csv")
+features["gdp per capita"] = load_csv("world_factbook/economy/real_gdp_per_capita.csv")
+features["gdp growth rate"] = load_csv("world_factbook/economy/real_gdp_growth_rate.csv")
+features["inflation rate"] = load_csv("world_factbook/economy/inflation_rate_consumer_prices.csv")
+
+
+# --- People and Society ---
+features["net migration rate"] = load_csv("world_factbook/people_and_society/net_migration_rate.csv")
+features["population growth rate"] = load_csv("world_factbook/people_and_society/population_growth_rate.csv")
+features["birth rate"] = load_csv("world_factbook/people_and_society/birth_rate.csv")
+features["death rate"] = load_csv("world_factbook/people_and_society/death_rate.csv")
+
 
 assert features["population"]["united states"][0] == "3", "US population rank test"
 assert features["life expectancy"]["chile"][1] == "79.57", "Chile life expectancy value test"
@@ -48,5 +60,12 @@ assert features["area"]["south africa"][1] == "1,219,090", "South Africa area va
 assert len(features["median age"]) == 226, "Median Age dictionary size test"
 assert features["gdp"]["china"][0] == "1", "China gdp rank test"
 assert features["gdp"]["china"][3] == "2019 est.", "China gdp date of info test"
+
+#new test cases
 assert features["population"]["china"][2] == "east asia/southeast asia", "China region test"
+assert features["gdp"]["united states"][1] == "$20,524,945,000,000", "US gdp value test"
+assert features["gdp"]["brazil"][0] == "10", "Brazil gdp rank test"
+assert features["gdp"]["brazil"][2] == "south america", "Brazil gdp region test"
+
+
 print("if we get here, the tests passed")
