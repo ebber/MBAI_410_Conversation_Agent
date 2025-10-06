@@ -102,6 +102,9 @@ def list_patterns(unused):
 
         Returns: a list of the known patterns. 
     """
+    
+
+    
     return None
         
 
@@ -111,6 +114,7 @@ def bye_action(unused):
 
         Args: unused - an empty list resulting from a call to match.
     """
+    print("Thank you for using the chatbot. Exiting...")
     raise KeyboardInterrupt
 
 
@@ -120,7 +124,7 @@ def bye_action(unused):
 
 pa_list = [(str.split("which country is ranked number _ for %"), country_by_rank),
            (str.split("what is % ranked for %"), rank_by_country),
-           (str.split("which countries do you know about"), list_countries),
+           (str.split("which countries do you know about"), list_countries), #TODO: use LLM to interpret many variations of this question
            (str.split("what kinds of questions do you understand"), list_patterns),
            (["bye"], bye_action)]
 
@@ -137,7 +141,24 @@ def search_pa_list(src):
         a list of answers. Will be ["I don't understand"] if it finds no matches and
         ["No answers"] if it finds a match but no answers
     """
-    return None
+
+    #Figure out what action to take based on the source input passed in from the user
+    for pattern, action in pa_list:
+        matched_values = match(pattern, src)
+        if matched_values == []: #try matching the pattern
+            #if the pattern matches, call the action function (these are the actions that had no inputs, like bye_action)
+            return action(None)
+        elif matched_values == None:
+            continue
+        else: #the pattern matches, call the action function to query the dataset             
+            result = action(matched_values)
+            if result == []:
+                return ["No answers"]
+            else:
+                return result
+
+    #no match found, return None
+    return ["I don't understand"]
 
 
 def query_loop():
@@ -150,7 +171,19 @@ def query_loop():
         and exit gracefully. You'll need to except KeyboardInterrupt and
         EOFError.
     """
-    pass
+
+    while True:
+        try:
+            import string
+            user_input = input("Enter a question: ")
+            user_input = user_input.lower().rstrip(string.punctuation).split()
+            print(search_pa_list(user_input))
+        except KeyboardInterrupt:
+            print("Thank you for using the chatbot. Exiting...")
+            break
+        except EOFError:
+            print("Thank you for using the chatbot. Exiting...")
+            break
 
 # Test cases for country_by_rank function
 
@@ -264,9 +297,10 @@ if __name__ == "__main__":
     assert search_pa_list(["which", "country", "is", "ranked", "number", "2", "for",
                                                    "median", "age"]) == ["japan"], "search_pa_list test 2"
     assert search_pa_list(["what", "is", "XYZ", "ranked", "for", "population"]) == ["No answers"], "search_pa_list test 3"
+    print("search_pa_list test passed")
 
     #uncomment the line below to interact with your chatbot
-    #query_loop()
+    query_loop()
     
 
 
